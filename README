@@ -1,0 +1,14 @@
+To make it run:
+Navigate to this directory and start a server
+gem install sinatra
+ruby -rubygems myapp.rb
+
+open a browser and go to
+http://localhost:4567/
+and away you go!
+
+
+TODO
+Gemfile and config stuff
+Make it look prettier
+Require SSL to prevent session-hijacking
