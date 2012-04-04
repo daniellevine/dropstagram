@@ -133,7 +133,7 @@ get '/dropbox' do
         if e.http_response.code == '404'
             return html_page "Path not found: #{h path}", ""
         else
-            return html_page "Dropbox API error", "<pre>#{h e.http_response}</pre>"
+            return html_page "Dropbox API error", "<p>#{h e.http_response}</p>"
         end
     end
     redirect url("/upload")
