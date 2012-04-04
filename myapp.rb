@@ -4,13 +4,13 @@ require 'instagram'
 require 'rubygems'
 require 'pp'
 require 'dropbox_sdk'
-#require 'dropbox'
 require 'open-uri'
 require 'net/https'
 require 'cgi'
 require 'json'
 
 enable :sessions
+set :public_folder, File.dirname(__FILE__) + '/static'
 
 ##### CONFIGURATION VARIABLES
 
@@ -32,7 +32,7 @@ ACCESS_TYPE = :app_folder
 ##### APP START
 
 get "/" do
-  html = '<a href="/oauth/connect">Connect with Instagram and Upload Photos</a><br />'
+  erb :start
 end
 
 ##### INSTAGRAM AUTH
@@ -51,8 +51,9 @@ end
 get "/likes" do
   client = Instagram.client(:access_token => session[:access_token])
   user = client.user
-  my_likes = [] 
-  html = "<h1>#{user.username}'s liked photos</h1>"
+  my_likes = []
+  @username = user.username
+  @thumbnails = []
   client.user_liked_media["data"].each do |media_item|
     short_tag = media_item.images.standard_resolution.url.split('/')[-1]
     tmp_url = File.dirname(__FILE__).to_s + "/tmp/#{short_tag}"
@@ -62,15 +63,14 @@ get "/likes" do
       end
     }
     my_likes.push(tmp_url)
-    html << "<img src='#{media_item.images.thumbnail.url}'><br />"        
+    @thumbnails.push (media_item.images.thumbnail.url)     
   end
   session[:my_likes] = my_likes
-  if my_likes.length == 0
-    html <<'<div>You have not liked any photos</div><br />'
-  else
-    html <<'<div><a href="../dropbox">Connect with Dropbox and Upload your Liked Photos</a></div>'
+  @any_likes = false
+  if my_likes.length != 0
+    @any_likes = true
   end
-  html
+  erb :likes
 end
 
 ##### DROPBOX AUTH
@@ -103,7 +103,7 @@ get '/oauth-callback' do
     end
     session.delete(:request_db_session)
     session[:authorized_db_session] = db_session.serialize
-      redirect url('/dropbox')
+    redirect url('/dropbox')
 end
 
 def get_db_client
@@ -162,24 +162,62 @@ get '/upload' do
           return html_page "Dropbox API error", "<p>#{h e}</p>"
       end
     end
-    html_page "Upload complete", "Success"
+    erb :success
 end
 
 get '/*' do
-  html = '<div>Oops wrong url!</div>'
+  erb :oops
 end
 
 # -------------------------------------------------------------------
-
-def html_page(title, body)
-    "<html>" +
-        "<head><title>#{h title}</title></head>" +
-        "<body><h1>#{h title}</h1>#{body}</body>" +
-    "</html>"
-end
-
-
 helpers do
     include Rack::Utils
     alias_method :h, :escape_html
 end
+
+__END__
+@@ layout
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Dropstagram</title>
+
+<link rel="stylesheet" href="/css/reset.css" type="text/css"> 
+<link rel="stylesheet" href="/css/stylesheet.css" type="text/css"> 
+
+</head>
+  <body>
+    <div>
+        <h1>
+        	<div id='logo'> 
+    	     <img src="/assets/logo.png"/>
+        	</div>
+        </h1>
+
+    </div>
+   <%= yield %>
+  </body>
+</html>
+
+@@ start
+<p><a href="/oauth/connect" class="button">Connect with Instagram</a></p>
+
+@@ likes
+<p>
+<% for @item in @thumbnails %>
+  <img src='<%= @item %>'>
+<% end %>
+<% if @any_likes%>
+  <a href="../dropbox" class="button">Save to Dropbox</a>
+<% else %> 
+  <div>You have not liked any photos</div><br />
+<% end %>
+</p>
+@@ success
+<p>You successfully uploaded your Instagram likes to Dropbox</p>
+
+@@ oops
+<p>Oops wrong url!</p>
+
+

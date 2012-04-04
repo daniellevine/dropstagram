@@ -1,0 +1,95 @@
+@charset "UTF-8";
+/* written by Jimmy Chion 3/14/12 for Dan Levine */
+
+body {
+	background-image: url('../assets/little_pluses.png');
+	margin: none;
+	padding: none;
+	vertical-align:central;
+}
+
+h1{
+	margin-top: 30px;
+	background: url('../assets/denim.png');
+	height: 50px;
+	border-top: 2px solid #333;
+	border-bottom: 2px solid #DDD;
+	margin-bottom: 20px;
+	
+}
+
+
+#logo {
+	margin-left: 174px;
+	height:auto;
+	width:auto;
+	padding-top:4px;
+}
+
+
+
+p {
+	margin-left: 160px;
+	min-width: 720px; /*you might need to adjust this for iphone*/
+	min-height: 400;
+	max-width: 1200px;
+	font-family:Helvetica;
+	font-weight:bold;
+}
+
+p>img {
+	border: 12px solid #FFF;
+	border-bottom: 46px solid #FFF;
+	margin: 10px 16px;
+	box-shadow: 2px 3px 3px #666;
+	width:auto;
+	height:auto;
+}
+
+a.button {
+	font-size:16px;
+	vertical-align:central;
+	font-family:Helvetica;
+	font-weight:bold;
+	background:#999;
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#999), to(#777));
+	background:-moz-linear-gradient(0% 90% 90deg, #777, #999);
+	color:#fff;
+	display:block;
+	text-decoration:none;
+	width:170px;
+	text-align:center;
+	margin-left:16px;
+	margin-bottom:16px;
+	padding-top: 10px;
+	padding-bottom:8px;
+	
+	box-shadow: 2px 3px 3px #666;
+	-webkit-box-shadow: 2px 3px 3px #66;
+
+	-moz-border-radius:1px;
+	-webkit-border-radius:1px;
+	-o-border-radius:1px;
+	border-radius:1px;
+	
+}
+
+div {
+	font-family:Helvetica;
+	font-weight:bold;
+}
+
+a.button:hover {
+	color: #EEE;
+}
+
+a.button:active {
+	box-shadow: none;
+	-webkit-box-shadow:: none;
+	color:#BBB;
+	background:#333;
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#555), to(#888));
+	background:-moz-linear-gradient(0% 90% 90deg, #888, #555);
+	border-bottom: 2px white;
+	border-top: 2px black;
+}
